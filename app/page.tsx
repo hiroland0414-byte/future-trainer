@@ -1,65 +1,182 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
 
 export default function Home() {
+  const questions = [
+    "将来どのような人でありたいですか？",
+    "大切にしていきたい価値観は何ですか？",
+    "その考え方はどのような社会の場面で活かされますか？",
+    "これからどんな経験をしてみたいですか？",
+    "その機会を広げるためにどんな行動をしますか？",
+  ];
+
+  const placeholders = [
+    "例：人の役に立てる専門職として信頼される存在になりたい",
+    "例：人との信頼関係を大切にしたい",
+    "例：患者さんや利用者と関わる現場で活かせる",
+    "例：実際の現場を見る経験や、人と関わる活動をしてみたい",
+    "例：病院見学やインターンに参加してみる",
+  ];
+
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState<string[]>(Array(5).fill(""));
+  const [phase, setPhase] = useState<
+    "question" | "reflection" | "action" | "finish"
+  >("question");
+
+  const [reflection, setReflection] = useState({
+    notice: "",
+    good: "",
+    improve: "",
+  });
+
+  const [action, setAction] = useState("");
+
+  const handleChange = (value: string) => {
+    const updated = [...answers];
+    updated[step] = value;
+    setAnswers(updated);
+  };
+
+  const next = () => {
+    if (step < 4) {
+      setStep(step + 1);
+    } else {
+      setPhase("reflection");
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen flex justify-center items-start pt-10 bg-gradient-to-br from-[#0b1e3a] to-[#1e3a5f]">
+      
+      {/* ===== カード ===== */}
+      <div className="w-full max-w-[390px] bg-green-100/80 backdrop-blur-sm p-6 rounded-2xl shadow-xl">
+
+        {/* ===== ロゴ ===== */}
+        <div className="mb-4">
+          <img
+            src="/logo.png"
+            alt="K-career"
+            className="w-full rounded-xl shadow-md"
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        {/* ===== 質問 ===== */}
+        {phase === "question" && (
+          <>
+            <h1 className="text-xl font-bold text-center mb-4 text-green-800">
+              未来設計トレーナー
+            </h1>
+
+            <p className="text-sm text-green-700 mb-6 text-center">
+              あなたの未来について考えてみましょう
+            </p>
+
+            <div className="mb-4 text-sm text-green-700">
+              Q{step + 1} / 5
+            </div>
+
+            <div className="mb-4 font-medium text-green-900">
+              {questions[step]}
+            </div>
+
+            {/* 入力欄（白） */}
+            <textarea
+              value={answers[step]}
+              onChange={(e) => handleChange(e.target.value)}
+              className="w-full h-32 border border-gray-300 rounded-lg p-3 text-black bg-white focus:outline-none focus:ring-2 focus:ring-green-300"
+              placeholder={placeholders[step]}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+            <button
+              onClick={next}
+              className="mt-6 w-full bg-blue-500 text-white py-2 rounded-lg"
+            >
+              次へ
+            </button>
+          </>
+        )}
+
+        {/* ===== 振り返り ===== */}
+        {phase === "reflection" && (
+          <>
+            <h1 className="text-xl font-bold text-center mb-4 text-green-800">
+              振り返り
+            </h1>
+
+            {["notice", "good", "improve"].map((key, i) => {
+              const labels = ["今回の気づき", "良かった点", "改善したい点"];
+              const values = [reflection.notice, reflection.good, reflection.improve];
+
+              return (
+                <div className="mb-4" key={key}>
+                  <p className="text-sm mb-1 text-green-800">{labels[i]}</p>
+                  <textarea
+                    className="w-full h-24 border border-gray-300 rounded-lg p-2 text-black bg-white focus:outline-none focus:ring-2 focus:ring-green-300"
+                    value={values[i]}
+                    onChange={(e) =>
+                      setReflection({
+                        ...reflection,
+                        [key]: e.target.value,
+                      })
+                    }
+                    placeholder="自由に書いてみましょう"
+                  />
+                </div>
+              );
+            })}
+
+            <button
+              onClick={() => setPhase("action")}
+              className="mt-4 w-full bg-green-500 text-white py-2 rounded-lg"
+            >
+              次へ
+            </button>
+          </>
+        )}
+
+        {/* ===== 行動 ===== */}
+        {phase === "action" && (
+          <>
+            <h1 className="text-xl font-bold text-center mb-4 text-green-800">
+              次の行動を考える
+            </h1>
+
+            <textarea
+              className="w-full h-32 border border-gray-300 rounded-lg p-3 text-black bg-white focus:outline-none focus:ring-2 focus:ring-green-300"
+              value={action}
+              onChange={(e) => setAction(e.target.value)}
+              placeholder="例：見学に行く／話を聞く／調べる"
+            />
+
+            <button
+              onClick={() => setPhase("finish")}
+              className="mt-6 w-full bg-orange-500 text-white py-2 rounded-lg"
+            >
+              完了
+            </button>
+          </>
+        )}
+
+        {/* ===== 完了 ===== */}
+        {phase === "finish" && (
+          <>
+            <h1 className="text-xl font-bold text-center mb-4 text-green-800">
+              完了しました
+            </h1>
+
+            <button
+              onClick={() =>
+                (window.location.href = "https://kc-lp.vercel.app")
+              }
+              className="w-full bg-blue-500 text-white py-2 rounded-lg"
+            >
+              アプリ選択へ戻る
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
