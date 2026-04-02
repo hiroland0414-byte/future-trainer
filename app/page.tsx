@@ -166,15 +166,35 @@ export default function Home() {
               完了しました
             </h1>
 
-            <button
-              onClick={() =>
-                (window.location.href = "https://kc-lp.vercel.app")
-              }
-              className="w-full bg-blue-500 text-white py-2 rounded-lg"
-            >
-              アプリ選択へ戻る
-            </button>
-          </>
+  {/* PDFボタン */}
+  <button
+    onClick={() => {
+
+      sessionStorage.setItem(
+        "print_data",
+        JSON.stringify({
+          questions,
+          answers,
+        })
+      );
+
+      window.open("/print", "_blank");
+    }}
+    className="w-full bg-green-600 text-white py-2 rounded-lg mb-2"
+  >
+    PDFを見る
+  </button>
+
+  {/* 戻るボタン */}
+  <button
+    onClick={() =>
+      (window.location.href = "https://kc-lp.vercel.app")
+    }
+    className="w-full bg-blue-500 text-white py-2 rounded-lg"
+  >
+    アプリ選択へ戻る
+  </button>
+</>
         )}
       </div>
     </div>
